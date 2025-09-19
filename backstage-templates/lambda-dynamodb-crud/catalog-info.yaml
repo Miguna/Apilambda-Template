@@ -27,7 +27,6 @@ metadata:
     - nodejs
     - serverless
     - template
-    - backstage-template
   links:
     - url: https://github.com/Miguna/Apilambda-Template
       title: Repository
