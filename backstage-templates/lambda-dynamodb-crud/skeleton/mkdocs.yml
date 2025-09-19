@@ -1,0 +1,27 @@
+site_name: ${{ values.projectName | title }}
+site_description: ${{ values.description }}
+
+nav:
+  - Inicio: index.md
+  - API: api.md
+  - Deployment: deployment.md
+  - Local Development: local-development.md
+
+plugins:
+  - techdocs-core
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.superfences

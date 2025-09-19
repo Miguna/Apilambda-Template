@@ -1,0 +1,201 @@
+# ============================================
+# ${{ values.projectName | title }} - .gitignore
+# ============================================
+# Generado automáticamente por template Backstage
+# Para proyecto Lambda DynamoDB CRUD
+
+# ============================================
+# Node.js Dependencies
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ============================================
+# Runtime & Logs
+# ============================================
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+lib-cov/
+coverage/
+.nyc_output/
+.grunt/
+.bower_components/
+.lock-wscript/
+build/Release/
+
+# ============================================
+# Environment & Configuration
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+config/local.json
+config/development.json
+config/production.json
+
+# ============================================
+# AWS & Serverless
+# ============================================
+.aws/
+.serverless/
+.webpack/
+*.zip
+lambda-*.zip
+${{ values.functionName }}.zip
+deployment-package.zip
+
+# ============================================
+# DynamoDB Local
+# ============================================
+DynamoDBLocal.jar
+DynamoDBLocal_lib/
+dynamodb_local_latest.tar.gz
+shared-local-instance.db
+local-dynamodb.db
+*.db
+
+# ============================================
+# IDE & Editors
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Testing & Coverage
+# ============================================
+.jest/
+jest-coverage/
+coverage/
+.nyc_output/
+test-results/
+junit.xml
+allure-results/
+allure-report/
+
+# ============================================
+# Build & Distribution
+# ============================================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+.tmp/
+temp/
+
+# ============================================
+# Package Managers
+# ============================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.yarn/
+.pnp.*
+
+# ============================================
+# Documentation Generated
+# ============================================
+docs/site/
+site/
+.mkdocs/
+
+# ============================================
+# Monitoring & Debugging
+# ============================================
+.vscode-test/
+*.tgz
+*.tar.gz
+.fusebox/
+.dynamodb/
+.tern-port/
+.eslintcache
+.stylelintcache
+
+# ============================================
+# OS Generated
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ============================================
+# Project Specific
+# ============================================
+# Logs específicos del proyecto
+${{ values.projectName }}.log
+${{ values.functionName }}.log
+
+# Archivos de backup
+*.backup
+*.bak
+*.orig
+
+# Archivos temporales de testing
+test-*.json
+temp-*.json
+stress-test-results.txt
+
+# Archivos de deployment
+deployment-config.json
+aws-config.json
+
+# Data de prueba local
+local-data/
+test-data/
+mock-data/
+
+# ============================================
+# Security
+# ============================================
+# Nunca commitear credenciales
+.aws/credentials
+.aws/config
+aws-credentials.json
+secrets.json
+private-key.pem
+*.p12
+*.key
+*.crt
+
+# Variables de entorno con secretos
+.env.production
+.env.staging
+.env.secrets
+
+# ============================================
+# Optional: Postman
+# ============================================
+# Si no quieres versionar entornos específicos de Postman
+*postman_environment.json
+*postman_globals.json
+
+# ============================================
+# Optional: Scripts de desarrollo
+# ============================================
+# Scripts personales del desarrollador
+dev-scripts/
+personal-notes.md
+TODO.md

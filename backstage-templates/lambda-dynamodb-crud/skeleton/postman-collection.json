@@ -1,0 +1,356 @@
+{
+  "info": {
+    "name": "${{ values.projectName | title }} API",
+    "description": "${{ values.description }}\n\nEsta colección incluye todos los endpoints CRUD para la entidad ${{ values.entityName }}.\n\n**Configuración:**\n- baseUrl: http://localhost:3002\n- Tabla DynamoDB: ${{ values.tableName }}\n- Entidad: ${{ values.entityName }}\n\n**Variables disponibles:**\n- {{baseUrl}}: URL base del servidor\n- {{entityId}}: ID de la entidad para pruebas\n- {{timestamp}}: Timestamp actual",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "{{$randomUUID}}",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3002",
+      "description": "URL base del servidor local"
+    },
+    {
+      "key": "entityId",
+      "value": "001",
+      "description": "ID de ejemplo para testing"
+    },
+    {
+      "key": "timestamp",
+      "value": "{{$timestamp}}",
+      "description": "Timestamp actual"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Generar timestamp para usar en requests",
+          "pm.variables.set('currentTimestamp', new Date().toISOString());"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has correct structure', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('status', 'healthy');",
+              "    pm.expect(responseJson).to.have.property('service', '${{ values.projectName }}');",
+              "    pm.expect(responseJson).to.have.property('endpoints');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        },
+        "description": "Verificar que el servidor esté funcionando correctamente"
+      },
+      "response": []
+    }{% for method in values.enabledMethods %},
+{%- if method == 'POST' %}
+    {
+      "name": "Create ${{ values.entityName }}",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has created entity', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('${{ values.pkAttribute }}');",
+              "    pm.expect(responseJson).to.have.property('${{ values.skAttribute }}');",
+              "    pm.expect(responseJson).to.have.property('id');",
+              "    pm.expect(responseJson).to.have.property('createdAt');",
+              "    pm.expect(responseJson).to.have.property('entityType', '${{ values.entityName }}');",
+              "});",
+              "",
+              "// Guardar ID para usar en otros requests",
+              "const responseJson = pm.response.json();",
+              "if (responseJson.id) {",
+              "    pm.collectionVariables.set('entityId', responseJson.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"${{ values.pkAttribute }}\": \"${{ values.entityName | upper }}#{{entityId}}\",\n  \"${{ values.skAttribute }}\": \"METADATA\",\n  \"name\": \"Test ${{ values.entityName }} - {{$randomFirstName}}\",\n  \"description\": \"${{ values.entityName }} creado desde Postman el {{currentTimestamp}}\",\n  \"status\": \"active\",\n  \"metadata\": {\n    \"source\": \"postman\",\n    \"environment\": \"local\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}${{ values.baseEndpoint }}",
+          "host": ["{{baseUrl}}"],
+          "path": ${{ values.baseEndpoint.split('/')[1:] | tojson }}
+        },
+        "description": "Crear un nuevo ${{ values.entityName | lower }} en la base de datos"
+      },
+      "response": []
+    }
+{%- endif %}
+{%- if method == 'GET' %}
+    {
+      "name": "Get All ${{ values.entityName }}s",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has items array', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('items');",
+              "    pm.expect(responseJson.items).to.be.an('array');",
+              "    pm.expect(responseJson).to.have.property('count');",
+              "});",
+              "",
+              "pm.test('Items have correct structure', function () {",
+              "    const responseJson = pm.response.json();",
+              "    if (responseJson.items.length > 0) {",
+              "        const item = responseJson.items[0];",
+              "        pm.expect(item).to.have.property('${{ values.pkAttribute }}');",
+              "        pm.expect(item).to.have.property('${{ values.skAttribute }}');",
+              "        pm.expect(item).to.have.property('entityType', '${{ values.entityName }}');",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}${{ values.baseEndpoint }}",
+          "host": ["{{baseUrl}}"],
+          "path": ${{ values.baseEndpoint.split('/')[1:] | tojson }},
+          "query": [
+            {
+              "key": "${{ values.pkAttribute }}",
+              "value": "${{ values.entityName | upper }}#{{entityId}}",
+              "description": "Filtrar por Partition Key específico",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Obtener lista de todos los ${{ values.entityName | lower }}s"
+      },
+      "response": []
+    },
+    {
+      "name": "Get ${{ values.entityName }} by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 or 404', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test('Response has entity data', function () {",
+              "        const responseJson = pm.response.json();",
+              "        pm.expect(responseJson).to.have.property('${{ values.pkAttribute }}');",
+              "        pm.expect(responseJson).to.have.property('${{ values.skAttribute }}');",
+              "        pm.expect(responseJson).to.have.property('id', pm.collectionVariables.get('entityId'));",
+              "        pm.expect(responseJson).to.have.property('entityType', '${{ values.entityName }}');",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test('404 response has error message', function () {",
+              "        const responseJson = pm.response.json();",
+              "        pm.expect(responseJson).to.have.property('error');",
+              "        pm.expect(responseJson).to.have.property('message');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}${{ values.baseEndpoint }}/{{entityId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ${{ (values.baseEndpoint.split('/')[1:] + ['{{entityId}}']) | tojson }}
+        },
+        "description": "Obtener un ${{ values.entityName | lower }} específico por ID"
+      },
+      "response": []
+    }
+{%- endif %}
+{%- if method == 'PUT' %}
+    {
+      "name": "Update ${{ values.entityName }}",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 or 404', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test('Response has updated entity', function () {",
+              "        const responseJson = pm.response.json();",
+              "        pm.expect(responseJson).to.have.property('${{ values.pkAttribute }}');",
+              "        pm.expect(responseJson).to.have.property('${{ values.skAttribute }}');",
+              "        pm.expect(responseJson).to.have.property('updatedAt');",
+              "        pm.expect(responseJson).to.have.property('version');",
+              "        pm.expect(responseJson.name).to.include('Updated');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated ${{ values.entityName }} - {{$randomFirstName}}\",\n  \"description\": \"${{ values.entityName }} actualizado desde Postman el {{currentTimestamp}}\",\n  \"status\": \"updated\",\n  \"lastModifiedBy\": \"postman-user\",\n  \"metadata\": {\n    \"source\": \"postman\",\n    \"operation\": \"update\",\n    \"environment\": \"local\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}${{ values.baseEndpoint }}/{{entityId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ${{ (values.baseEndpoint.split('/')[1:] + ['{{entityId}}']) | tojson }}
+        },
+        "description": "Actualizar un ${{ values.entityName | lower }} existente"
+      },
+      "response": []
+    }
+{%- endif %}
+{%- if method == 'DELETE' %}
+    {
+      "name": "Delete ${{ values.entityName }}",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 204 or 404', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([204, 404]);",
+              "});",
+              "",
+              "if (pm.response.code === 204) {",
+              "    pm.test('Response confirms deletion', function () {",
+              "        const responseJson = pm.response.json();",
+              "        pm.expect(responseJson).to.have.property('message');",
+              "        pm.expect(responseJson.message).to.include('deleted');",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}${{ values.baseEndpoint }}/{{entityId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ${{ (values.baseEndpoint.split('/')[1:] + ['{{entityId}}']) | tojson }}
+        },
+        "description": "Eliminar un ${{ values.entityName | lower }} específico"
+      },
+      "response": []
+    }
+{%- endif %}{% endfor %},
+    {
+      "name": "Error Test - Invalid Endpoint",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('Response has error information', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('error', 'NotFound');",
+              "    pm.expect(responseJson).to.have.property('message');",
+              "    pm.expect(responseJson).to.have.property('availableEndpoints');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/invalid-endpoint",
+          "host": ["{{baseUrl}}"],
+          "path": ["invalid-endpoint"]
+        },
+        "description": "Probar manejo de errores con endpoint inválido"
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  },
+  "protocolProfileBehavior": {
+    "disableBodyPruning": true
+  }
+}

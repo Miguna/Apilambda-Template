@@ -1,0 +1,162 @@
+# ============================================
+# Apilambda-Template Repository - .gitignore
+# ============================================
+# Template repository para Backstage Spotify
+# Lambda DynamoDB CRUD Templates
+
+# ============================================
+# Node.js & npm
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================
+# Environment Variables
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# ============================================
+# AWS & DynamoDB Local
+# ============================================
+.aws/
+DynamoDBLocal.jar
+DynamoDBLocal_lib/
+dynamodb_local_latest.tar.gz
+shared-local-instance.db
+local-dynamodb.db
+*.db
+
+# Archivos de deployment AWS
+*.zip
+lambda-*.zip
+deployment-package.zip
+
+# ============================================
+# IDE & Editors
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.history/
+
+# ============================================
+# Logs & Debug
+# ============================================
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+# Testing & Coverage
+# ============================================
+coverage/
+.nyc_output/
+test-results/
+junit.xml
+
+# ============================================
+# Build & Distribution
+# ============================================
+dist/
+build/
+out/
+.tmp/
+temp/
+
+# ============================================
+# Documentation Build
+# ============================================
+docs/site/
+site/
+.mkdocs/
+
+# ============================================
+# Backstage Generated Content
+# ============================================
+# No ignorar los templates, pero sí archivos temporales de Backstage
+.backstage/
+backstage-cli.log
+
+# ============================================
+# Template Testing
+# ============================================
+# Archivos generados durante testing de templates
+template-test-output/
+generated-projects/
+test-repos/
+
+# ============================================
+# Development Scripts
+# ============================================
+dev-scripts/
+personal-notes.md
+TODO-personal.md
+
+# ============================================
+# OS Generated
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ============================================
+# Security - Credenciales
+# ============================================
+.aws/credentials
+.aws/config
+aws-credentials.json
+secrets.json
+private-key.pem
+*.p12
+*.key
+*.crt
+
+# ============================================
+# Backup Files
+# ============================================
+*.backup
+*.bak
+*.orig
+*~
+
+# ============================================
+# Template Specific Ignores
+# ============================================
+# Archivos de configuración específicos del entorno de desarrollo
+local-config.json
+dev-config.yaml
+
+# Archivos de prueba temporal
+temp-*.json
+test-*.json
+
+# ============================================
+# Optional: Mantener estructura pero ignorar contenido específico
+# ============================================
+# Si tienes carpetas de ejemplo que quieres mantener vacías
+# example-projects/*
+# !example-projects/.gitkeep

@@ -1,0 +1,146 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.projectName }}
+  title: ${{ values.projectName | title }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - aws
+    - lambda
+    - dynamodb
+    - crud
+    - ${{ values.entityName | lower }}
+  links:
+    - url: https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}
+      title: Repository
+      icon: github
+    - url: https://console.aws.amazon.com/lambda/home?region=us-east-1#/functions/${{ values.functionName }}
+      title: AWS Lambda Console
+      icon: cloud
+    - url: https://console.aws.amazon.com/dynamodb/home?region=us-east-1#tables:selected=${{ values.tableName }}
+      title: DynamoDB Table
+      icon: storage
+spec:
+  type: service
+  owner: platform-team
+  lifecycle: experimental
+  system: ${{ values.entityName | lower }}-management
+  providesApis:
+    - ${{ values.projectName }}-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: ${{ values.projectName }}-api
+  title: ${{ values.projectName | title }} API
+  description: API REST para operaciones CRUD de ${{ values.entityName }}
+  tags:
+    - rest
+    - crud
+    - ${{ values.entityName | lower }}
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: platform-team
+  system: ${{ values.entityName | lower }}-management
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: ${{ values.projectName | title }} API
+      description: API para operaciones CRUD de ${{ values.entityName }}
+      version: 1.0.0
+    servers:
+      - url: http://localhost:3002
+        description: Local development server
+    paths:
+{% for method in values.enabledMethods %}
+{%- if method == 'GET' %}
+      ${{ values.baseEndpoint }}:
+        get:
+          summary: Obtener lista de ${{ values.entityName | lower }}s
+          parameters:
+            - name: ${{ values.pkAttribute }}
+              in: query
+              schema:
+                type: string
+          responses:
+            '200':
+              description: Lista de ${{ values.entityName | lower }}s
+      ${{ values.baseEndpoint }}/{id}:
+        get:
+          summary: Obtener ${{ values.entityName | lower }} por ID
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: string
+          responses:
+            '200':
+              description: ${{ values.entityName }} encontrado
+            '404':
+              description: ${{ values.entityName }} no encontrado
+{%- endif %}
+{%- if method == 'POST' %}
+      ${{ values.baseEndpoint }}:
+        post:
+          summary: Crear nuevo ${{ values.entityName | lower }}
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    ${{ values.pkAttribute }}:
+                      type: string
+                    ${{ values.skAttribute }}:
+                      type: string
+          responses:
+            '201':
+              description: ${{ values.entityName }} creado exitosamente
+            '400':
+              description: Datos inválidos
+{%- endif %}
+{%- if method == 'PUT' %}
+      ${{ values.baseEndpoint }}/{id}:
+        put:
+          summary: Actualizar ${{ values.entityName | lower }} existente
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: string
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+          responses:
+            '200':
+              description: ${{ values.entityName }} actualizado exitosamente
+            '404':
+              description: ${{ values.entityName }} no encontrado
+{%- endif %}
+{%- if method == 'DELETE' %}
+      ${{ values.baseEndpoint }}/{id}:
+        delete:
+          summary: Eliminar ${{ values.entityName | lower }}
+          parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                type: string
+          responses:
+            '204':
+              description: ${{ values.entityName }} eliminado exitosamente
+            '404':
+              description: ${{ values.entityName }} no encontrado
+{%- endif %}
+{% endfor %}

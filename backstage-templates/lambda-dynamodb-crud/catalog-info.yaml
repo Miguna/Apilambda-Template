@@ -1,0 +1,42 @@
+apiVersion: backstage.io/v1alpha1
+kind: Template
+metadata:
+  name: lambda-dynamodb-crud
+  title: Lambda DynamoDB CRUD Service
+  description: |
+    Template para crear servicios Lambda con operaciones CRUD completas en DynamoDB.
+
+    Este template genera:
+    - Función Lambda con handlers CRUD (GET, POST, PUT, DELETE)
+    - Servidor Express para testing local
+    - Configuración DynamoDB con PK/SK
+    - Políticas IAM específicas
+    - Documentación automática con TechDocs
+    - Eventos Lambda canónicos para testing
+
+    Perfecto para demos y prototipos rápidos de servicios serverless.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - aws
+    - lambda
+    - dynamodb
+    - crud
+    - express
+    - nodejs
+    - serverless
+    - template
+  links:
+    - url: https://github.com/orquestatech/apilambda-templates
+      title: Repository
+      icon: github
+    - url: https://docs.aws.amazon.com/lambda/
+      title: AWS Lambda Documentation
+      icon: docs
+    - url: https://docs.aws.amazon.com/dynamodb/
+      title: AWS DynamoDB Documentation
+      icon: docs
+spec:
+  owner: platform-team
+  type: template
+  lifecycle: production

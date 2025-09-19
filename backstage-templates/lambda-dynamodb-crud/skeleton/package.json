@@ -1,0 +1,43 @@
+{
+  "name": "${{ values.projectName }}",
+  "version": "1.0.0",
+  "description": "${{ values.description }}",
+  "main": "server.mjs",
+  "type": "module",
+  "scripts": {
+    "local": "node server.mjs",
+    "start": "node server.mjs",
+    "test": "echo \"Tests coming soon...\" && exit 0",
+    "lint": "echo \"Linting coming soon...\" && exit 0"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "dynamodb",
+    "crud",
+    "${{ values.entityName | lower }}",
+    "serverless"
+  ],
+  "author": "${{ values.destination.owner }}",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.848.0",
+    "@aws-sdk/util-dynamodb": "^3.848.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}.git"
+  },
+  "bugs": {
+    "url": "https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}/issues"
+  },
+  "homepage": "https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}#readme"
+}

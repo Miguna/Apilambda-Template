@@ -1,0 +1,146 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: lambda-dynamodb-crud
+  title: Lambda DynamoDB CRUD Service
+  description: Template para crear servicios Lambda con operaciones CRUD en DynamoDB
+  tags:
+    - aws
+    - lambda
+    - dynamodb
+    - crud
+    - express
+    - nodejs
+spec:
+  owner: platform-team
+  type: service
+  parameters:
+    - title: Información del Proyecto
+      required:
+        - projectName
+        - description
+        - functionName
+      properties:
+        projectName:
+          title: Nombre del Proyecto
+          type: string
+          description: Nombre del proyecto en kebab-case
+          pattern: '^[a-z0-9-]+$'
+          default: my-lambda-service
+        description:
+          title: Descripción
+          type: string
+          description: Descripción del servicio
+          default: Servicio Lambda con operaciones CRUD en DynamoDB
+        functionName:
+          title: Nombre de la Función
+          type: string
+          description: Nombre de la función Lambda (PascalCase)
+          pattern: '^[A-Z][a-zA-Z0-9]*$'
+          default: CustomerManagement
+
+    - title: Configuración DynamoDB
+      required:
+        - tableName
+        - entityName
+      properties:
+        tableName:
+          title: Nombre de la Tabla DynamoDB
+          type: string
+          description: Nombre de la tabla DynamoDB
+          default: MyTable_STD
+        entityName:
+          title: Nombre de la Entidad
+          type: string
+          description: Nombre de la entidad que maneja el servicio
+          default: Customer
+        pkAttribute:
+          title: Atributo Partition Key
+          type: string
+          description: Nombre del atributo PK
+          default: PK
+        skAttribute:
+          title: Atributo Sort Key
+          type: string
+          description: Nombre del atributo SK
+          default: SK
+
+    - title: Configuración de Endpoints
+      required:
+        - baseEndpoint
+      properties:
+        baseEndpoint:
+          title: Endpoint Base
+          type: string
+          description: Ruta base para los endpoints (ej. /api/customers)
+          pattern: '^/[a-z0-9/-]+$'
+          default: /api/customers
+        enabledMethods:
+          title: Métodos HTTP Habilitados
+          type: array
+          description: Métodos HTTP que soportará el servicio
+          items:
+            type: string
+            enum: ['GET', 'POST', 'PUT', 'DELETE']
+          default: ['GET', 'POST', 'PUT', 'DELETE']
+          uniqueItems: true
+
+    - title: Repositorio y Organización
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: URL del Repositorio
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: template
+      name: Generar contenido del template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./
+        values:
+          projectName: ${{ parameters.projectName }}
+          description: ${{ parameters.description }}
+          functionName: ${{ parameters.functionName }}
+          tableName: ${{ parameters.tableName }}
+          entityName: ${{ parameters.entityName }}
+          pkAttribute: ${{ parameters.pkAttribute }}
+          skAttribute: ${{ parameters.skAttribute }}
+          baseEndpoint: ${{ parameters.baseEndpoint }}
+          enabledMethods: ${{ parameters.enabledMethods }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          owner: ${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}
+          repo: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
+
+    - id: publish
+      name: Publicar repositorio
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        gitCommitMessage: 'Initial commit: Lambda DynamoDB CRUD service'
+        gitAuthorName: Backstage
+        gitAuthorEmail: backstage@orquestatech.com
+
+    - id: register
+      name: Registrar en Backstage
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Repositorio
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Abrir en Backstage
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
