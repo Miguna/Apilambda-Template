@@ -56,8 +56,6 @@ spec:
       - url: http://localhost:3002
         description: Local development server
     paths:
-{% for method in values.enabledMethods %}
-{%- if method == 'GET' %}
       ${{ values.baseEndpoint }}:
         get:
           summary: Obtener lista de ${{ values.entityName | lower }}s
@@ -69,6 +67,81 @@ spec:
           responses:
             '200':
               description: Lista de ${{ values.entityName | lower }}s
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ${{ values.pkAttribute }}:
+                              type: string
+                            ${{ values.skAttribute }}:
+                              type: string
+                            name:
+                              type: string
+                            id:
+                              type: string
+                      count:
+                        type: number
+        post:
+          summary: Crear nuevo ${{ values.entityName | lower }}
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - ${{ values.pkAttribute }}
+                    - ${{ values.skAttribute }}
+                    - name
+                  properties:
+                    ${{ values.pkAttribute }}:
+                      type: string
+                      example: "${{ values.entityName | upper }}#123"
+                    ${{ values.skAttribute }}:
+                      type: string
+                      example: "METADATA"
+                    name:
+                      type: string
+                      example: "Example ${{ values.entityName }}"
+                    description:
+                      type: string
+                      example: "Description of the ${{ values.entityName | lower }}"
+          responses:
+            '201':
+              description: ${{ values.entityName }} creado exitosamente
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      ${{ values.pkAttribute }}:
+                        type: string
+                      ${{ values.skAttribute }}:
+                        type: string
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+            '400':
+              description: Datos inválidos
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                      message:
+                        type: string
       ${{ values.baseEndpoint }}/{id}:
         get:
           summary: Obtener ${{ values.entityName | lower }} por ID
@@ -78,35 +151,39 @@ spec:
               required: true
               schema:
                 type: string
+              example: "123"
           responses:
             '200':
               description: ${{ values.entityName }} encontrado
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      ${{ values.pkAttribute }}:
+                        type: string
+                      ${{ values.skAttribute }}:
+                        type: string
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
             '404':
               description: ${{ values.entityName }} no encontrado
-{%- endif %}
-{%- if method == 'POST' %}
-      ${{ values.baseEndpoint }}:
-        post:
-          summary: Crear nuevo ${{ values.entityName | lower }}
-          requestBody:
-            required: true
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    ${{ values.pkAttribute }}:
-                      type: string
-                    ${{ values.skAttribute }}:
-                      type: string
-          responses:
-            '201':
-              description: ${{ values.entityName }} creado exitosamente
-            '400':
-              description: Datos inválidos
-{%- endif %}
-{%- if method == 'PUT' %}
-      ${{ values.baseEndpoint }}/{id}:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "NotFound"
+                      message:
+                        type: string
+                        example: "${{ values.entityName }} not found"
         put:
           summary: Actualizar ${{ values.entityName | lower }} existente
           parameters:
@@ -115,20 +192,43 @@ spec:
               required: true
               schema:
                 type: string
+              example: "123"
           requestBody:
             required: true
             content:
               application/json:
                 schema:
                   type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "Updated ${{ values.entityName }}"
+                    description:
+                      type: string
+                      example: "Updated description"
           responses:
             '200':
               description: ${{ values.entityName }} actualizado exitosamente
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      ${{ values.pkAttribute }}:
+                        type: string
+                      ${{ values.skAttribute }}:
+                        type: string
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      version:
+                        type: number
             '404':
               description: ${{ values.entityName }} no encontrado
-{%- endif %}
-{%- if method == 'DELETE' %}
-      ${{ values.baseEndpoint }}/{id}:
         delete:
           summary: Eliminar ${{ values.entityName | lower }}
           parameters:
@@ -137,10 +237,20 @@ spec:
               required: true
               schema:
                 type: string
+              example: "123"
           responses:
             '204':
               description: ${{ values.entityName }} eliminado exitosamente
             '404':
               description: ${{ values.entityName }} no encontrado
-{%- endif %}
-{% endfor %}
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "NotFound"
+                      message:
+                        type: string
+                        example: "${{ values.entityName }} not found"
