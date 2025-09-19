@@ -41,7 +41,6 @@ metadata:
       title: AWS DynamoDB Documentation
       icon: docs
 spec:
-  owner: group:development
+  owner: development
   type: template
   lifecycle: experimental
-  system: backstage-templates
