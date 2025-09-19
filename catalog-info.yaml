@@ -52,8 +52,6 @@ metadata:
       title: Backstage Templates Documentation
       icon: docs
 spec:
-  type: library
+  type: service
   owner: development
   lifecycle: production
-  providesApis:
-    - apilambda-template-api
