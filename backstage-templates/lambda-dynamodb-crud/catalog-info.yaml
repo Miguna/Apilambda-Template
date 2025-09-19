@@ -42,5 +42,5 @@ metadata:
       icon: docs
 spec:
   owner: development
-  type: template
+  type: service
   lifecycle: experimental
