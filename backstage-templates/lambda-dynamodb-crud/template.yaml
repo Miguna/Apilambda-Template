@@ -12,7 +12,7 @@ metadata:
     - express
     - nodejs
 spec:
-  owner: platform-team
+  owner: group:development
   type: service
   parameters:
     - title: Información del Proyecto

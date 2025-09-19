@@ -25,7 +25,7 @@ metadata:
       icon: storage
 spec:
   type: service
-  owner: platform-team
+  owner: group:development
   lifecycle: experimental
   system: ${{ values.entityName | lower }}-management
   providesApis:
@@ -44,7 +44,7 @@ metadata:
 spec:
   type: openapi
   lifecycle: experimental
-  owner: platform-team
+  owner: group:development
   system: ${{ values.entityName | lower }}-management
   definition: |
     openapi: 3.0.0

@@ -1,0 +1,21 @@
+# ============================================
+# Configuración para Backstage app-config.yaml
+# ============================================
+# Añadir esta sección a tu app-config.yaml de Backstage
+
+scaffolder:
+  templates:
+    # Registrar template directamente desde GitHub
+    - type: url
+      target: https://github.com/Miguna/Apilambda-Template/blob/main/backstage-templates/lambda-dynamodb-crud/template.yaml
+      rules:
+        - allow: [Template]
+
+# Opcional: También registrar en el catálogo para documentación
+catalog:
+  locations:
+    # Solo si quieres documentar el template como componente
+    - type: url
+      target: https://github.com/Miguna/Apilambda-Template/blob/main/backstage-templates/lambda-dynamodb-crud/template.yaml
+      rules:
+        - allow: [Template]
