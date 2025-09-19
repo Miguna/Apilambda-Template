@@ -1,0 +1,188 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: apilambda-template
+  title: Apilambda-Template Repository
+  description: |
+    Repositorio principal de templates de Backstage para AWS Lambda y DynamoDB.
+
+    Este repositorio contiene una colección completa de templates para generar servicios
+    serverless con arquitecturas canónicas, incluyendo:
+
+    - Templates de Backstage parametrizables
+    - Funciones Lambda con operaciones CRUD
+    - Configuración DynamoDB optimizada
+    - Herramientas de testing integradas
+    - Documentación automática con TechDocs
+    - Políticas IAM con permisos mínimos
+
+    Ideal para equipos que buscan acelerar el desarrollo de APIs serverless robustas.
+  annotations:
+    github.com/project-slug: Miguna/Apilambda-Template
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/source-location: url:https://github.com/Miguna/Apilambda-Template/tree/main/
+  tags:
+    - platform-engineering
+    - backstage
+    - templates
+    - aws
+    - lambda
+    - dynamodb
+    - serverless
+    - crud
+    - nodejs
+    - infrastructure
+    - devops
+    - scaffolding
+  links:
+    - url: https://github.com/Miguna/Apilambda-Template
+      title: GitHub Repository
+      icon: github
+    - url: https://github.com/Miguna/Apilambda-Template/blob/main/backstage-templates/lambda-dynamodb-crud/template.yaml
+      title: Main Template
+      icon: code
+    - url: https://github.com/Miguna/Apilambda-Template/issues
+      title: Issues & Support
+      icon: help
+    - url: https://docs.aws.amazon.com/lambda/
+      title: AWS Lambda Documentation
+      icon: cloud
+    - url: https://backstage.io/docs/features/software-templates/
+      title: Backstage Templates Documentation
+      icon: docs
+spec:
+  type: library
+  owner: group:development
+  lifecycle: production
+  system: platform-tools
+  providesApis:
+    - apilambda-template-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: apilambda-template-api
+  title: Apilambda Template Collection API
+  description: |
+    Colección de templates de Backstage para servicios serverless AWS.
+
+    Esta API conceptual representa los templates disponibles y sus capacidades:
+    - Lambda DynamoDB CRUD Template
+    - Variables parametrizables
+    - Arquitecturas predefinidas
+    - Testing tools integradas
+  tags:
+    - templates
+    - scaffolding
+    - backstage
+    - aws
+    - serverless
+spec:
+  type: backstage-templates
+  lifecycle: production
+  owner: group:development
+  system: platform-tools
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: Apilambda Template Collection
+      description: Templates de Backstage para servicios AWS serverless
+      version: 1.0.0
+    paths:
+      /templates/lambda-dynamodb-crud:
+        get:
+          summary: Lambda DynamoDB CRUD Template
+          description: Template principal para servicios CRUD serverless
+          responses:
+            '200':
+              description: Template information
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: lambda-dynamodb-crud
+                      title:
+                        type: string
+                        example: Lambda DynamoDB CRUD Service
+                      description:
+                        type: string
+                        example: Template para crear servicios Lambda con operaciones CRUD en DynamoDB
+                      parameters:
+                        type: object
+                        properties:
+                          projectName:
+                            type: string
+                            description: Nombre del proyecto
+                          functionName:
+                            type: string
+                            description: Nombre de la función Lambda
+                          tableName:
+                            type: string
+                            description: Nombre de la tabla DynamoDB
+                          entityName:
+                            type: string
+                            description: Entidad que maneja el servicio
+                          baseEndpoint:
+                            type: string
+                            description: Ruta base de la API
+                          enabledMethods:
+                            type: array
+                            items:
+                              type: string
+                              enum: [GET, POST, PUT, DELETE]
+                      generates:
+                        type: object
+                        properties:
+                          lambdaFunction:
+                            type: string
+                            description: Función Lambda con handlers CRUD
+                          dynamoTable:
+                            type: string
+                            description: Configuración de tabla DynamoDB
+                          expressServer:
+                            type: string
+                            description: Servidor local para development
+                          testingTools:
+                            type: string
+                            description: Scripts cURL y colección Postman
+                          documentation:
+                            type: string
+                            description: TechDocs automática
+                          iamPolicies:
+                            type: string
+                            description: Políticas de seguridad
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: platform-tools
+  title: Platform Engineering Tools
+  description: |
+    Sistema de herramientas para Platform Engineering que incluye templates,
+    scaffolding y utilidades para acelerar el desarrollo.
+  tags:
+    - platform-engineering
+    - devops
+    - tools
+    - automation
+spec:
+  owner: group:development
+  domain: engineering-productivity
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: engineering-productivity
+  title: Engineering Productivity
+  description: |
+    Dominio enfocado en herramientas y prácticas que mejoran la productividad
+    del equipo de desarrollo, incluyendo templates, automation y tooling.
+  tags:
+    - productivity
+    - automation
+    - developer-experience
+spec:
+  owner: group:development
