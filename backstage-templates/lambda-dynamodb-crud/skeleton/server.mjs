@@ -1,6 +1,6 @@
 import express from 'express';
 import { buildEvent } from './events/buildEvent.mjs';
-import { handler as ${{ values.functionName | camelCase }} } from './${{ values.functionName }}/local.mjs';
+import { handler as lambdaHandler } from './lambda-function/local.mjs';
 import cors from 'cors';
 
 const app = express();
@@ -105,7 +105,7 @@ function handleLambdaResponse(result, res) {
 app.get('${{ values.baseEndpoint }}', async (req, res) => {
   console.log('¡Llegó una petición GET a ${{ values.baseEndpoint }}');
   const event = buildEvent(req, { operation: 'list' });
-  const result = await ${{ values.functionName | camelCase }}(event);
+  const result = await lambdaHandler(event);
   handleLambdaResponse(result, res);
 });
 
@@ -113,7 +113,7 @@ app.get('${{ values.baseEndpoint }}', async (req, res) => {
 app.get('${{ values.baseEndpoint }}/:id', async (req, res) => {
   console.log(`¡Llegó una petición GET a ${{ values.baseEndpoint }}/:id`);
   const event = buildEvent(req, { operation: 'get' });
-  const result = await ${{ values.functionName | camelCase }}(event);
+  const result = await lambdaHandler(event);
   handleLambdaResponse(result, res);
 });
 {%- endif %}
@@ -123,7 +123,7 @@ app.get('${{ values.baseEndpoint }}/:id', async (req, res) => {
 app.post('${{ values.baseEndpoint }}', async (req, res) => {
   console.log('¡Llegó una petición POST a ${{ values.baseEndpoint }}');
   const event = buildEvent(req, { operation: 'create' });
-  const result = await ${{ values.functionName | camelCase }}(event);
+  const result = await lambdaHandler(event);
   handleLambdaResponse(result, res);
 });
 {%- endif %}
@@ -133,7 +133,7 @@ app.post('${{ values.baseEndpoint }}', async (req, res) => {
 app.put('${{ values.baseEndpoint }}/:id', async (req, res) => {
   console.log(`¡Llegó una petición PUT a ${{ values.baseEndpoint }}/:id`);
   const event = buildEvent(req, { operation: 'update' });
-  const result = await ${{ values.functionName | camelCase }}(event);
+  const result = await lambdaHandler(event);
   handleLambdaResponse(result, res);
 });
 {%- endif %}
@@ -143,7 +143,7 @@ app.put('${{ values.baseEndpoint }}/:id', async (req, res) => {
 app.delete('${{ values.baseEndpoint }}/:id', async (req, res) => {
   console.log(`¡Llegó una petición DELETE a ${{ values.baseEndpoint }}/:id`);
   const event = buildEvent(req, { operation: 'delete' });
-  const result = await ${{ values.functionName | camelCase }}(event);
+  const result = await lambdaHandler(event);
   handleLambdaResponse(result, res);
 });
 {%- endif %}

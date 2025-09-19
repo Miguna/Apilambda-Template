@@ -41,7 +41,7 @@ aws iam attach-role-policy \
 # Crear y adjuntar política personalizada de DynamoDB
 aws iam create-policy \
   --policy-name ${{ values.functionName }}DynamoPolicy \
-  --policy-document file://${{ values.functionName }}/dynamo-policy.json
+  --policy-document file://lambda-function/dynamo-policy.json
 
 aws iam attach-role-policy \
   --role-name ${{ values.functionName }}Role \
@@ -68,7 +68,7 @@ aws iam attach-role-policy \
 
 ```bash
 # Comprimir código
-zip -r ${{ values.functionName }}.zip ${{ values.functionName }}/ events/ package.json
+zip -r lambda-function.zip lambda-function/ events/ package.json
 
 # Crear función Lambda
 aws lambda create-function \
