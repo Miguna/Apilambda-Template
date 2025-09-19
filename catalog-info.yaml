@@ -185,4 +185,5 @@ metadata:
     - automation
     - developer-experience
 spec:
-  owner: group:development
+  owner: development
+  type: service
