@@ -55,6 +55,5 @@ spec:
   type: library
   owner: development
   lifecycle: production
-  system: platform-tools
   providesApis:
     - apilambda-template-api
