@@ -52,7 +52,7 @@ metadata:
       icon: docs
 spec:
   type: library
-  owner: group:development
+  owner: development
   lifecycle: production
   system: platform-tools
   providesApis:
@@ -80,7 +80,7 @@ metadata:
 spec:
   type: backstage-templates
   lifecycle: production
-  owner: group:development
+  owner: development
   system: platform-tools
   definition: |
     openapi: 3.0.0
@@ -169,8 +169,7 @@ metadata:
     - tools
     - automation
 spec:
-  owner: group:development
-  domain: engineering-productivity
+  owner: development
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Domain
